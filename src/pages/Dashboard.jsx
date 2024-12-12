@@ -72,7 +72,7 @@ const Dashboard = () => {
 
   // console.log(userInfo);
   return (
-    <section className="h-[100vh] p-4 lg:px-10 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] px-4 pb-4 lg:px-10 w-[100%] overflow-y-auto">
       <Navbar />
       <h4 className="font-[700] mt-2">Dashboard</h4>
       <div className="lg:grid grid-cols-3 flex flex-col gap-4 lg:gap-10 mt-4 w-full">

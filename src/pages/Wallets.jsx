@@ -24,7 +24,7 @@ const Wallets = () => {
   const [openBillPay, setOpenBillPay] = useState(false);
 
   return (
-    <section className="h-[100vh] p-4 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] px-4 pb-4 w-[100%] overflow-y-auto">
       <Navbar />
       <div className="flex flex-col pb-6 space-y-4 lg:w-[75%] mx-auto">
         <h4 className=" font-[700] text-[#0c0c0c]  items-center">Wallet</h4>

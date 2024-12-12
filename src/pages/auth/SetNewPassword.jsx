@@ -36,7 +36,7 @@ const SetNewPassword = () => {
         resetCode: Number(code),
         password: password1,
       };
-      // dispatch(verifyCodeUpdatePassword(data));
+      dispatch(verifyCodeUpdatePassword(data));
     } else if (!email.match(emailRegex)) {
       toast.error("Please provide a valid Email address");
     } else if (password1 !== password2) {

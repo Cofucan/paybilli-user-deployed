@@ -247,16 +247,48 @@ export const getPendingBets = createAsyncThunk(
       return thunkAPI.rejectWithValue(true);
     }
   }
-);
+); 
+
+export const setNewPin = createAsyncThunk("setNewPin", async (data, thunkAPI) => {
+  try {
+    let response = await fetch(`${baseUrl}/account/set-pin/`, {
+      method: "POST",
+      body: JSON.stringify(data.data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${data.token}`,
+      },
+    }).then((res) => res.json());
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(true);
+  }
+}); 
+
+export const deactivateAccount = createAsyncThunk("deactivateAccount", async (data, thunkAPI) => {
+  try {
+    let response = await fetch(`${baseUrl}/account/deactivate-account/`, {
+      method: "POST",
+      body: JSON.stringify(data.data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${data.token}`,
+      },
+    }).then((res) => res.json());
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(true);
+  }
+});
 
 export const getAllEventTypes = createAsyncThunk(
   "getAllEventTypes",
-  async (token, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
       let response = await fetch(`${baseUrl}/events/event-types/`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${data.token}`,
         },
       }).then((res) => res.json());
       return response;
@@ -720,6 +752,33 @@ const userReducer = createSlice({
         state.error = false;
         toast.error("Ooops!! Something went wrong, try again later!");
       })
+      .addCase(setNewPin.pending, (state, action) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(setNewPin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        toast.success("Pin Updated Successful");
+      })
+      .addCase(setNewPin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        toast.error("Error Updating Pin");
+      })
+      .addCase(deactivateAccount.pending, (state, action) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(deactivateAccount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;  
+      })
+      .addCase(deactivateAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        toast.error("Error Deactivating Pin");
+      })
       .addCase(generateIntent.pending, (state, action) => {
         state.intentLoading = true;
         state.error = false;
@@ -787,7 +846,7 @@ const userReducer = createSlice({
 export const {
   logout,
   setOnboarding,
-  setOnboardingLoading,
+  setOnboardingLoading, 
   toggleDarkMode,
   setApplyCoursePrice,
   toggleRemeberMe,

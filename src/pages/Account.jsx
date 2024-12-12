@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar'
 
 export default function Account() {
     return (
-        <section className="h-[100vh] lg:px-10 p-4 w-[100%] overflow-y-auto">
+        <section className="h-[100vh] lg:px-10 px-4 pb-4 w-[100%] overflow-y-auto">
             <Navbar />
             <div className="flex flex-col space-y-4 w-full lg:w-[75%] mx-auto">
                 <h4 className=" font-[700] text-[#0c0c0c] items-center">Account</h4>

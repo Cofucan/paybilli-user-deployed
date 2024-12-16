@@ -4,6 +4,7 @@ import { IoIosEye, IoIosEyeOff, IoMdClose } from 'react-icons/io'
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { deactivateAccount, logout } from '../redux/userReducer';
+import { toast } from 'react-toastify';
 
 export default function DeactivationOfAccount(props) {
 

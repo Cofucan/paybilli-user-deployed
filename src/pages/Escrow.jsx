@@ -148,7 +148,7 @@ const Escrow = () => {
   ];
 
   return (
-    <section className="h-[100vh] lg:px-10 px-4 pb-4 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] lg:px-10 lg:pt-0 pt-4 px-4 pb-4 w-[100%] overflow-y-auto">
       <Navbar />
       <div className="flex mt-6 justify-between items-center w-full">
         <h4 className="font-[700] mt-2">Created Bet</h4>

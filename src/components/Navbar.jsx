@@ -9,7 +9,7 @@ export default function Navbar() {
     const { userInfo } = useSelector((state) => state.user);
 
     return (
-        <div className="hidden sticky top-0 lg:flex bg-[#F5F5F5] py-2 w-full items-center justify-between">
+        <div className="hidden sticky z-[10000] top-0 lg:flex bg-[#F5F5F5] py-2 w-full items-center justify-between">
             <div className="flex flex-col">
                 <h4 className="flex font-[700] text-[#0c0c0c]  items-center">
                     Hi, {userInfo.first_name}{" "}

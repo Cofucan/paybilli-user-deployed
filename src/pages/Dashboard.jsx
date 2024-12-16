@@ -72,7 +72,7 @@ const Dashboard = () => {
 
   // console.log(userInfo);
   return (
-    <section className="h-[100vh] px-4 pb-4 lg:px-10 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] px-4 pb-4 lg:pt-0 pt-4 lg:px-10 w-[100%] overflow-y-auto">
       <Navbar />
       <h4 className="font-[700] mt-2">Dashboard</h4>
       <div className="lg:grid grid-cols-3 flex flex-col gap-4 lg:gap-10 mt-4 w-full">
@@ -109,7 +109,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div role="button" onClick={() => navigate("/user/events/openbet")} className="flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
+        <div role="button" onClick={() => navigate("/user/events/openbet")} className=" hidden md:flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
           <div className="flex items-center gap-x-6">
             <img
               onContextMenu={(e) => e.preventDefault()}
@@ -125,7 +125,7 @@ const Dashboard = () => {
             <HiOutlineArrowNarrowRight size={32} />{" "}
           </div>
         </div>
-        <div role="button" onClick={() => navigate("/user/events/pendingbet")} className="flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
+        <div role="button" onClick={() => navigate("/user/events/pendingbet")} className=" hidden md:flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
           <div className="flex items-center gap-x-6 ">
             <img
               onContextMenu={(e) => e.preventDefault()}
@@ -139,6 +139,40 @@ const Dashboard = () => {
           </div>
           <div className="flex justify-end w-full  mt-auto">
             <HiOutlineArrowNarrowRight size={32} />{" "}
+          </div>
+        </div>
+        <div className=" w-full md:hidden flex gap-4 " >
+          <div role="button" onClick={() => navigate("/user/events/openbet")} className="flex flex-col w-full bg-white rounded-[7px] p-5 max-h-[155px]">
+            <div className="flex items-center gap-x-6">
+              <img
+                onContextMenu={(e) => e.preventDefault()}
+                src={Shake}
+                width={50}
+              />
+              <div className="flex flex-col">
+                <h4 className="text-[#0c0c0c] font-[700] xxl:text-[25px]">031</h4>
+                <p>Open Bets</p>
+              </div>
+            </div>
+            <div className="flex justify-end w-full  mt-auto">
+              <HiOutlineArrowNarrowRight size={32} />{" "}
+            </div>
+          </div>
+          <div role="button" onClick={() => navigate("/user/events/pendingbet")} className="flex flex-col w-full bg-white rounded-[7px] p-5 max-h-[155px]">
+            <div className="flex items-center gap-x-6 ">
+              <img
+                onContextMenu={(e) => e.preventDefault()}
+                src={Shake}
+                width={50}
+              />
+              <div className="flex flex-col">
+                <h4 className="text-[#0c0c0c] font-[700] xxl:text-[25px]">067</h4>
+                <p>Pending Bets</p>
+              </div>
+            </div>
+            <div className="flex justify-end w-full  mt-auto">
+              <HiOutlineArrowNarrowRight size={32} />{" "}
+            </div>
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ export default function LoggedInAuthenticator({ children }) {
   // }
 
   return (
-    <div className="flex max-md:flex-col">
+    <div className="flex max-md:flex-col overflow-hidden ">
       <ToastContainer style={{ zIndex: 999999999 }} />
       <div className=" lg:block  hidden " >
         {(!window.location.pathname.includes("onboarding")) && (
@@ -52,9 +52,9 @@ export default function LoggedInAuthenticator({ children }) {
         )}
       </div>
 
-      <MobileHeader openDrawer={() => setOpenDrawer(true)} />
 
-      <div className=" md:h-[100vh] lg:pt-0 pt-[60px] w-full">
+      <div className="h-[100vh] lg:pt-0 w-full relative flex flex-col ">
+      <MobileHeader openDrawer={() => setOpenDrawer(true)} />
         <Outlet />
       </div>
     </div>

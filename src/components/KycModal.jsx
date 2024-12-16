@@ -4,6 +4,7 @@ import { IoMdClose } from 'react-icons/io'
 import { toast } from 'react-toastify';
 import { kycVerification } from '../redux/userReducer';
 import { useDispatch, useSelector } from 'react-redux';
+import { BeatLoader } from 'react-spinners';
 
 export default function KycModal(props) {
 

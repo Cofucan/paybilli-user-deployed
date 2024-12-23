@@ -68,7 +68,7 @@ const Verification = () => {
 
       <div className="w-[100%]  lg:w-max mx-auto mt-[4%] p-8 lg:p-4 ">
         <h3 className="font-[600] text-[40px] bg-clip-text text-[#3FAAE0] ">
-          Enter the 4-digit sent to <br />{" "}
+          Enter the 6-digit sent to <br />{" "}
           {userInfo.email && userInfo.email.length > 1 ? userInfo.email : " "}
         </h3>
         {/* <p>
@@ -77,7 +77,7 @@ const Verification = () => {
         </p> */}
         <div className="flex mt-6 gap-x-6">
           <PinInput
-            length={4}
+            length={6}
             focus
             // disabled
             // secret 

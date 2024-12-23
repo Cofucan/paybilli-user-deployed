@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { MdClose } from "react-icons/md";
-import { addEvent } from "../redux/userReducer";
+import { addEvent, airtimePayment } from "../redux/userReducer";
 import { BeatLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import SuccessModal from "./successModal";
+import PinInput from "react-pin-input";
+import { formatNumber } from "../helper/numberFormat";
 
 const BuyAirtime = ({ setOpenAirtime }) => {
-  const { loading, userInfo, airtimeOptions } = useSelector(
+  const { loading, balance, airtimeOptions } = useSelector(
     (state) => state.user
   );
 
@@ -14,37 +17,18 @@ const BuyAirtime = ({ setOpenAirtime }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [amount, setAmount] = useState("");
   const [phase, setPhase] = useState(1);
-  const [pinDigits, setPinDigits] = useState(Array(4).fill(""));
+  const [pinDigits, setPinDigits] = useState("");
 
   const dispatch = useDispatch();
   const [showTab, setShowTab] = useState(false);
+  const [tab, setTab] = useState(false)
 
   useEffect(() => {
     setTimeout(() => {
       setShowTab(true);
     }, 10);
   }, []);
-  const pinInputRefs = useRef([]);
-
-  useEffect(() => {
-    if (pinDigits.join("").length == 4) {
-      console.log("ss");
-    }
-  }, [pinDigits]);
-
-  console.log(pinDigits.join(""), service_id, phoneNumber, amount);
-
-  const handlePinInputChange = (index, value) => {
-    const newPinDigits = [...pinDigits];
-    newPinDigits[index] = value;
-    setPinDigits(newPinDigits);
-
-    if (value && index < pinDigits.length - 1) {
-      pinInputRefs.current[index + 1].focus();
-    } else if (!value && index > 0) {
-      pinInputRefs.current[index - 1].focus();
-    }
-  };
+  const pinInputRefs = useRef([]);  
 
   const validateForm = () => {
     if (!service_id || !phoneNumber || !amount) {
@@ -67,20 +51,53 @@ const BuyAirtime = ({ setOpenAirtime }) => {
     }
   };
 
+
+  const payForAirtime = () => {
+
+    setPhase(4)
+
+    const dataInfo = {
+      phone_number: phoneNumber,
+      service_id: service_id,
+      amount: amount,
+      pin: pinDigits
+    }
+
+    dispatch(airtimePayment({ dataInfo, pinDigits })).then((res) => {
+
+      console.log(res);
+      if (res?.type === "airtimePayment/rejected") {
+        setPhase(3)
+      } else if (res?.payload?.message) {
+        toast.error(res?.payload?.message);
+        setPinDigits(Array(4).fill(""))
+        setPhase(3)
+      } else {
+        setTimeout(() => {
+          setTab(true)
+        }, 1000);
+      }
+    }
+    );
+  };
+
+  console.log(pinDigits);
+
   return (
-    <div className="w-full absolute top-0 left-0 z-50 h-full bg-black/[.70] flex justify-end">
+    <div className="w-full fixed top-0 left-0 z-[10000] h-full bg-black/[.70] flex justify-end">
       <div
-        className={`overflow-y-auto ${
-          showTab ? "w-[80%] md:w-[30%] bg-[#f6f6f6]" : "w-[0px]"
-        } p-4 flex flex-col`}
+        className={`overflow-y-auto ${showTab ? "w-[80%] md:w-[30%] bg-[#f6f6f6]" : "w-[0px]"
+          } p-4 flex flex-col`}
       >
-        <div
-          onClick={() => setOpenAirtime(false)}
-          className="bg-[#e5e5e5] w-fit ml-auto p-1 cursor-pointer rounded-full"
-        >
-          <MdClose />
-        </div>
-        {phase !== 3 && (
+        {phase <= 3 && (
+          <div
+            onClick={() => setOpenAirtime(false)}
+            className="bg-[#e5e5e5] w-fit ml-auto p-1 cursor-pointer rounded-full"
+          >
+            <MdClose />
+          </div>
+        )}
+        {phase <= 3 && (
           <div className="flex flex-col">
             <div className="flex items-center justify-between">
               <h3 className="text-[#212059] font-[600]">Buy Airtime</h3>
@@ -102,7 +119,7 @@ const BuyAirtime = ({ setOpenAirtime }) => {
             </p>
 
             <div className="flex mx-auto mt-8 gap-x-6">
-              {[...Array(4)].map((_, index) => (
+              {/* {[...Array(4)].map((_, index) => (
                 <div key={index} className="relative">
                   <input
                     ref={(el) => (pinInputRefs.current[index] = el)}
@@ -125,7 +142,18 @@ const BuyAirtime = ({ setOpenAirtime }) => {
                     </div>
                   )}
                 </div>
-              ))}
+              ))} */}
+ 
+                <PinInput
+                  length={4}
+                  focus
+                  // disabled
+                  // secret 
+                  inputStyle={{ backgroundColor: '#D5D5D5', borderRadius: "8px", fontSize: "18px", borderColor: "#D5D5D5" }}
+                  type="numeric"
+                  onChange={(e) => setPinDigits(e)}
+                  // onComplete={(e) => submit(e)}
+                /> 
             </div>
           </div>
         )}
@@ -198,7 +226,7 @@ const BuyAirtime = ({ setOpenAirtime }) => {
                 <div>
                   Amount <span className="text-[red]">*</span>
                 </div>
-                <div>wallet bal:</div>
+                <div>wallet bal: {balance.length > 0 ? formatNumber(balance[1].balance) : "0.00"}</div>
               </label>
               <input
                 onChange={(e) => setAmount(e.target.value)}
@@ -211,8 +239,8 @@ const BuyAirtime = ({ setOpenAirtime }) => {
             </div>
           </>
         )}
-        <div className="mt-auto flex gap-x-2">
-          {phase !== 1 && (
+        <div className="mt-auto flex items-center gap-x-2">
+          {(phase !== 1 && phase !== 4) && (
             <button
               onClick={() => setPhase(phase - 1)}
               className="border-2 text-[15px] text-[#3FAAE0] font-[500] border-[#3FAAE0] rounded-[7px] px-6 p-3 w-max h-max"
@@ -220,21 +248,43 @@ const BuyAirtime = ({ setOpenAirtime }) => {
               Previous
             </button>
           )}
-          <button
-            onClick={handleSubmit}
-            className="w-max text-[15px] h-max p-3 text-[white] font-[500] px-6 bg-[#3FAAE0] rounded-[7px]"
-          >
-            {loading ? (
-              <BeatLoader
-                style={{ padding: "2px" }}
-                color="#ffffff"
-                size={10}
-              />
-            ) : (
-              "Proceed"
-            )}
-          </button>
+          {phase < 3 && (
+            <button
+              onClick={handleSubmit}
+              className="w-max text-[15px] h-max p-3 text-[white] font-[500] px-6 bg-[#3FAAE0] rounded-[7px]"
+            >
+              {loading ? (
+                <BeatLoader
+                  style={{ padding: "2px" }}
+                  color="#ffffff"
+                  size={10}
+                />
+              ) : (
+                "Proceed"
+              )}
+            </button>
+          )}
+          {phase === 3 && (
+            <button
+              onClick={payForAirtime}
+              disabled={pinDigits[3] ? false : true}
+              className="w-max text-[15px] disabled:opacity-50 h-max p-3 text-[white] font-[500] px-6 bg-[#3FAAE0] rounded-[7px]"
+            >
+              {loading ? (
+                <BeatLoader
+                  style={{ padding: "2px" }}
+                  color="#ffffff"
+                  size={10}
+                />
+              ) : (
+                "Submit"
+              )}
+            </button>
+          )}
         </div>
+        {phase === 4 && (
+          <SuccessModal tab={tab} close={setOpenAirtime} />
+        )}
       </div>
     </div>
   );

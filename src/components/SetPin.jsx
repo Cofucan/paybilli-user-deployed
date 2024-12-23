@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { BeatLoader } from 'react-spinners'
 import { toast } from 'react-toastify'
 import { setNewPin } from '../redux/userReducer'
+import SuccessModal from './successModal'
 
 export default function SetPin(props) {
 
@@ -12,9 +13,11 @@ export default function SetPin(props) {
     const { loading } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const [tab, setTab] = useState(0)
+    const [tabTwo, setTabTwo] = useState(false)
     const token = sessionStorage.getItem("token");
 
     const submit = (digit) => {
+        setTab(2)
 
         const data = {
             pin: digit
@@ -23,8 +26,13 @@ export default function SetPin(props) {
         if (pin === digit) {
             dispatch(setNewPin({
                 data, token
-            }));
-            setTab(2)
+            })).then((res) => {
+                if (res?.payload?.message === "Transaction Pin Set Successfully!") {
+                    setTabTwo(true)
+                } else {
+                    setTab((prev) => prev - 1)
+                } 
+            });
         } else {
             toast.error("Incorrect Pin");
             setTab(0)
@@ -32,9 +40,9 @@ export default function SetPin(props) {
     }
 
     return (
-        <div className=' w-full fixed inset-0 bg-black bg-opacity-30 lg:px-0 px-4 flex justify-center items-center ' >
+        <div className=' w-full fixed inset-0 bg-black bg-opacity-30 z-[10000] lg:px-0 px-4 flex justify-center items-center ' >
             <div className=' relative z-20 w-full rounded-xl max-w-[400px] h-fit bg-white ' >
-                <div onClick={()=> props?.setOpenPin(false)} role='button' className=' w-7 h-7 absolute right-4 top-4 rounded-full flex justify-center items-center bg-[#DFDFDF] ' >
+                <div onClick={() => props?.setOpenPin(false)} role='button' className=' w-7 h-7 absolute right-4 top-4 rounded-full flex justify-center items-center bg-[#DFDFDF] ' >
                     <IoMdClose size={"20px"} />
                 </div>
                 {tab === 0 && (
@@ -55,7 +63,7 @@ export default function SetPin(props) {
                                 onChange={(e) => setPin(e)}
                                 onComplete={() => setTab(1)}
                             />
-                        </div> 
+                        </div>
                     </div>
                 )}
                 {tab === 1 && (
@@ -76,14 +84,17 @@ export default function SetPin(props) {
                                 // onChange={(e) => setConfirmPin(e)}
                                 onComplete={(e) => submit(e)}
                             />
-                        </div> 
+                        </div>
                     </div>
                 )}
-                {tab === 2 && ( 
+                {/* {tab === 2 && ( 
                     <div className=' w-full h-[400px] flex flex-col justify-center items-center px-6 pb-6' >
                         <p className=' text-[30px] font-bold text-[#232759] ' >Successful</p> 
                         <p className=' mt-2 text-base text-center' >Lorem ipsum dolor sit amet consectetur. Purus odio porttitor dignissim orci non odio porttitor dignissim orci no</p>
                     </div>
+                )} */}
+                {tab === 2 && (
+                    <SuccessModal  tab={tabTwo} close={props?.setOpenPin} />
                 )}
             </div>
         </div>

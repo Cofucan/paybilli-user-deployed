@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { MdClose } from "react-icons/md";
-import { addEvent } from "../redux/userReducer";
+import { addEvent, getTvList } from "../redux/userReducer";
 import { BeatLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import { formatNumber } from "../helper/numberFormat";
 
 const PayBill = ({ setOpenAirtime }) => {
-  const { loading, userInfo, airtimeOptions } = useSelector(
+  const { loading, balance } = useSelector(
     (state) => state.user
   );
 
@@ -16,6 +17,10 @@ const PayBill = ({ setOpenAirtime }) => {
   const [phase, setPhase] = useState(1);
   const [pinDigits, setPinDigits] = useState(Array(4).fill(""));
 
+  const tvOption = [
+    "dstv", "gotv", "startimes", "showmax"
+  ]
+
   const dispatch = useDispatch();
   const [showTab, setShowTab] = useState(false);
 
@@ -24,6 +29,13 @@ const PayBill = ({ setOpenAirtime }) => {
       setShowTab(true);
     }, 10);
   }, []);
+
+
+  useEffect(() => {
+    if (service_id) {
+      dispatch(getTvList(service_id));
+    }
+  }, [service_id]);
   const pinInputRefs = useRef([]);
 
   useEffect(() => {
@@ -68,7 +80,7 @@ const PayBill = ({ setOpenAirtime }) => {
   };
 
   return (
-    <div className="w-full absolute top-0 left-0 h-full bg-black/[.70] flex justify-end">
+    <div className="w-full fixed top-0 left-0 h-full z-[10000] bg-black/[.70] flex justify-end">
       <div
         className={`overflow-y-auto ${showTab ? "w-[60%] md:w-[30%] bg-[#f6f6f6]" : "w-[0px]"
           } p-4 flex flex-col`}
@@ -159,7 +171,7 @@ const PayBill = ({ setOpenAirtime }) => {
         )}
         {phase === 1 && (
           <>
-            <div className="flex flex-col mt-6">
+            {/* <div className="flex flex-col mt-6">
               <label className="mb-2 font-[500] text-[#0c0c0c]">
                 Country <span className="text-[red]">*</span>
               </label>
@@ -172,7 +184,7 @@ const PayBill = ({ setOpenAirtime }) => {
                   Select Country Type
                 </option>
               </select>
-            </div>
+            </div> */}
 
             <div className="flex flex-col mt-3">
               <label className="mb-2 font-[500] text-[#0c0c0c]">
@@ -183,9 +195,14 @@ const PayBill = ({ setOpenAirtime }) => {
                 onChange={(e) => setServiceId(e.target.value)}
                 className="mb-4 text-[14px] text-[#7d7d7d] font-[500] p-2 bg-[#dbdbdb] rounded-[4px]"
               >
-                <option disabled hidden value="">
+                <option value="">
                   Select the category of the Bills
                 </option>
+                {tvOption?.map((item) => {
+                  return(
+                    <option key={item} >{item}</option>
+                  )
+                })}
               </select>
             </div>
 
@@ -222,7 +239,7 @@ const PayBill = ({ setOpenAirtime }) => {
                 <div>
                   Amount <span className="text-[red]">*</span>
                 </div>
-                <div>wallet bal:</div>
+                <div>wallet bal: {balance.length > 0 ? formatNumber(balance[1].balance) : "0.00"}</div>
               </label>
               <input
                 onChange={(e) => setAmount(e.target.value)}

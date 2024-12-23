@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import Onboarding from "../pages/Onboarding";
+import { useSearchParams } from "react-router-dom";
 
 const initialState = {
   loggedIn: checkLoggedIn(),
@@ -25,6 +26,7 @@ const initialState = {
   onboarding: {},
   openBets: [],
   pendingBets: [],
+  dataList: [],
   betTypes: [],
   airtimeOptions: [],
   intent: {},
@@ -32,11 +34,15 @@ const initialState = {
   userEvents: [],
 };
 
+const sessionStoragetoken = sessionStorage.getItem("token");
+
 const baseUrl = "https://paybilli-api-16f195c5b3f3.herokuapp.com";
 
 function checkLoggedIn() {
-  const sessionStoragetoken = sessionStorage.getItem("token");
-  if (sessionStoragetoken) return true;
+  // const sessionStoragetoken = sessionStorage.getItem("token");
+
+  const sessionStoragetokenNew = sessionStorage.getItem("token");
+  if (sessionStoragetokenNew) return true;
   else return false;
 }
 initialState.loggedIn = checkLoggedIn();
@@ -116,7 +122,7 @@ export const verifyEmail = createAsyncThunk(
         body: JSON.stringify(data.data),
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${data.token}`,
+          // Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -124,7 +130,7 @@ export const verifyEmail = createAsyncThunk(
       return thunkAPI.rejectWithValue(true);
     }
   }
-); 
+);
 
 export const setPassword = createAsyncThunk(
   "setPassword",
@@ -135,7 +141,7 @@ export const setPassword = createAsyncThunk(
         body: JSON.stringify(data.data),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${data.token}`,
+          Authorization: `Bearer ${data?.token}`,
         },
       }).then((res) => res.json());
       return response;
@@ -152,7 +158,7 @@ export const sendVerificationCode = createAsyncThunk(
       let response = await fetch(`${baseUrl}/account/resend-verify-token/`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -169,7 +175,7 @@ export const updateProfile = createAsyncThunk(
       let response = await fetch(`${baseUrl}/account/user-details/`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
         body: JSON.stringify(data.data),
       }).then((res) => res.json());
@@ -189,7 +195,7 @@ export const kycVerification = createAsyncThunk(
         body: JSON.stringify(data.kyc),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${data.token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -206,7 +212,7 @@ export const setPin = createAsyncThunk("setPin", async (data, thunkAPI) => {
       body: JSON.stringify(data.data),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${data.token}`,
+        Authorization: `Bearer ${sessionStoragetoken}`,
       },
     }).then((res) => res.json());
     return response;
@@ -219,12 +225,12 @@ export const getOpenBets = createAsyncThunk(
   "getOpenBets",
   async (token, thunkAPI) => {
     try {
-      let response = await fetch(`${baseUrl}/events/event/open`, {
+      let response = await fetch(`${baseUrl}/events/user/?status=open`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
-      }).then((res) => res.json());
+      }).then((res) => res?.json());
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(true);
@@ -236,10 +242,10 @@ export const getPendingBets = createAsyncThunk(
   "getPendingBets",
   async (token, thunkAPI) => {
     try {
-      let response = await fetch(`${baseUrl}/events/event/pending`, {
+      let response = await fetch(`${baseUrl}/events/user/?status=pending`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -247,7 +253,43 @@ export const getPendingBets = createAsyncThunk(
       return thunkAPI.rejectWithValue(true);
     }
   }
-); 
+);
+
+export const getDataList = createAsyncThunk(
+  "getDataList",
+  async (data, thunkAPI) => {
+    console.log(data);
+    try {
+      let response = await fetch(`${baseUrl}/wallet/data-variation-code/${data}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${sessionStoragetoken}`,
+        },
+      }).then((res) => res.json());
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(true);
+    }
+  }
+);
+
+export const getTvList = createAsyncThunk(
+  "getTvList",
+  async (data, thunkAPI) => {
+    console.log(data);
+    try {
+      let response = await fetch(`${baseUrl}/wallet/tv-variation-code/${data}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${sessionStoragetoken}`,
+        },
+      }).then((res) => res.json());
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(true);
+    }
+  }
+);
 
 export const setNewPin = createAsyncThunk("setNewPin", async (data, thunkAPI) => {
   try {
@@ -256,14 +298,14 @@ export const setNewPin = createAsyncThunk("setNewPin", async (data, thunkAPI) =>
       body: JSON.stringify(data.data),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${data.token}`,
+        Authorization: `Bearer ${sessionStoragetoken}`,
       },
     }).then((res) => res.json());
     return response;
   } catch (error) {
     return thunkAPI.rejectWithValue(true);
   }
-}); 
+});
 
 export const deactivateAccount = createAsyncThunk("deactivateAccount", async (data, thunkAPI) => {
   try {
@@ -272,7 +314,7 @@ export const deactivateAccount = createAsyncThunk("deactivateAccount", async (da
       body: JSON.stringify(data.data),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${data.token}`,
+        Authorization: `Bearer ${sessionStoragetoken}`,
       },
     }).then((res) => res.json());
     return response;
@@ -288,7 +330,7 @@ export const getAllEventTypes = createAsyncThunk(
       let response = await fetch(`${baseUrl}/events/event-types/`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${data.token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -298,14 +340,82 @@ export const getAllEventTypes = createAsyncThunk(
   }
 );
 
+
+export const placeBet = createAsyncThunk("placeBet", async (data, thunkAPI) => {
+  try {
+    let response = await fetch(`${baseUrl}/events/user/${data?.details?.id}/join/`, {
+      method: "POST",
+      body: JSON.stringify(data.dataInfo),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStoragetoken}`,
+      },
+    }).then((res) => res.json());
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(true);
+  }
+});
+
+
 export const addEvent = createAsyncThunk("addEvent", async (data, thunkAPI) => {
   try {
-    let response = await fetch(`${baseUrl}/events/event/`, {
+    let response = await fetch(`${baseUrl}/events/user/`, {
       method: "POST",
       body: JSON.stringify(data.data),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${data.token}`,
+        Authorization: `Bearer ${sessionStoragetoken}`,
+      },
+    }).then((res) => res.json());
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(true);
+  }
+});
+
+export const airtimePayment = createAsyncThunk("airtimePayment", async (data, thunkAPI) => {
+
+  try {
+    let response = await fetch(`${baseUrl}/wallet/airtime-recharge/`, {
+      method: "POST",
+      body: JSON.stringify(data.dataInfo),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStoragetoken}`,
+      },
+    }).then((res) => res.json());
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(true);
+  }
+});
+
+export const dataPayment = createAsyncThunk("dataPayment", async (data, thunkAPI) => {
+
+  try {
+    let response = await fetch(`${baseUrl}/wallet/data-purchase/`, {
+      method: "POST",
+      body: JSON.stringify(data.dataInfo),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStoragetoken}`,
+      },
+    }).then((res) => res.json());
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(true);
+  }
+});
+
+export const inviteBettor = createAsyncThunk("inviteBettor", async (data, thunkAPI) => {
+  try {
+    let response = await fetch(`${baseUrl}/events/invite/`, {
+      method: "POST",
+      body: JSON.stringify(data.data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStoragetoken}`,
       },
     }).then((res) => res.json());
     return response;
@@ -323,7 +433,7 @@ export const generateIntent = createAsyncThunk(
         body: JSON.stringify(data.data),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${data.token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -340,7 +450,7 @@ export const getAirtimeOptions = createAsyncThunk(
       let response = await fetch(`${baseUrl}/wallet/airtime-options/`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -357,7 +467,7 @@ export const getWalletBalance = createAsyncThunk(
       let response = await fetch(`${baseUrl}/wallet/`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${data.token}`,
+          Authorization: `Bearer ${sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -372,11 +482,11 @@ export const getUserCreatedEvents = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       let response = await fetch(
-        `${baseUrl}/events/user-events/${data.condition}`,
+        `${baseUrl}/events/user/?user_created=true`,
         {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${data.token}`,
+            Authorization: `Bearer ${sessionStoragetoken}`,
           },
         }
       ).then((res) => res.json());
@@ -436,11 +546,14 @@ const userReducer = createSlice({
       .addCase(userLogin.fulfilled, (state, action) => {
         state.loading = false;
         state.error = false;
+        console.log(action);
         if (
           action.payload.token &&
           action.payload.token.access.length > 1
           // action.payload.is_signup_completed
         ) {
+          console.log(action);
+          state.token = action.payload.token.access;
           sessionStorage.setItem("token", action.payload.token.access);
           state.loggedIn = true;
           state.userInfo = action.payload.user;
@@ -499,7 +612,12 @@ const userReducer = createSlice({
           toast.success("Verification Successful!");
           state.token = action.payload.token.access;
           // sessionStorage.setItem("token", action.payload.token.access);
+          // /user/onboarding
+          // if(window?.location?.pathname?.includes("forgot=true")) {
           window.location.assign("/set-password");
+          // } else {
+          //   window.location.assign("/user/onboarding");
+          // }
         }
         // if (action.payload.message === "success") {
         //   toast.success("Email verified successfully");
@@ -572,7 +690,7 @@ const userReducer = createSlice({
             "You have not completed sign up! An OTP has been sent to your email for verification. Redirecting..."
           );
           setTimeout(() => {
-            window.location.assign("/account-verification");
+            window.location.assign("/account-verification?forgot=true");
           }, 3000);
         } else if (
           action.payload.user_exist &&
@@ -586,7 +704,34 @@ const userReducer = createSlice({
         state.error = true;
         state.responseMessage = action.payload?.message;
       })
-
+      .addCase(airtimePayment.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(airtimePayment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        console.log(action);
+      })
+      .addCase(airtimePayment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.responseMessage = action.payload?.message;
+      }) 
+      .addCase(dataPayment.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(dataPayment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        console.log(action);
+      })
+      .addCase(dataPayment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.responseMessage = action.payload?.message;
+      })
       .addCase(forgotPassword.pending, (state) => {
         state.loading = true;
         state.error = false;
@@ -675,7 +820,9 @@ const userReducer = createSlice({
       .addCase(getOpenBets.fulfilled, (state, action) => {
         state.loading = false;
         state.error = false;
-        // console.log(action.payload);
+
+        state.openBets = action.payload.results
+        console.log(action.payload);
       })
       .addCase(getOpenBets.rejected, (state, action) => {
         state.loading = false;
@@ -689,12 +836,45 @@ const userReducer = createSlice({
       .addCase(getPendingBets.fulfilled, (state, action) => {
         state.loading = false;
         state.error = false;
-        // console.log(action.payload);
+        console.log(action.payload);
+
+        state.pendingBets = action?.payload?.results
       })
       .addCase(getPendingBets.rejected, (state, action) => {
         state.loading = false;
         state.error = false;
         toast.error("Ooops!! Something went wrong, try again later!");
+      })
+      .addCase(getDataList.pending, (state, action) => {
+        // state.loading = true;
+        state.error = false;
+      })
+      .addCase(getDataList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.dataList = action.payload?.results?.content?.variations;
+        console.log(action.payload);
+      })
+      .addCase(getDataList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        // toast.error("Ooops!! Something went wrong, try again later!");
+      })
+      
+      .addCase(getTvList.pending, (state, action) => {
+        // state.loading = true;
+        state.error = false;
+      })
+      .addCase(getTvList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.dataList = action.payload?.results?.content?.variations;
+        console.log(action.payload);
+      })
+      .addCase(getTvList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        // toast.error("Ooops!! Something went wrong, try again later!");
       })
       .addCase(getAllEventTypes.pending, (state, action) => {
         state.loading = true;
@@ -725,7 +905,7 @@ const userReducer = createSlice({
           action.payload.event_id.length > 1 &&
           action.payload.participants.length > 0
         ) {
-          toast.success("Event created Successfully");
+          // toast.success("Event created Successfully");
         }
         if (action.payload.detail && action.payload.detail.length > 1) {
           toast.error(action.payload.detail);
@@ -733,6 +913,48 @@ const userReducer = createSlice({
         // state.betTypes = action.payload.results;
       })
       .addCase(addEvent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        toast.error("Ooops!! Something went wrong, try again later!");
+      })
+      
+
+      .addCase(placeBet.pending, (state, action) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(placeBet.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        // console.log(action.payload);
+        // if (
+        //   action.payload.event_id &&
+        //   action.payload.event_id.length > 1 &&
+        //   action.payload.participants.length > 0
+        // ) {
+        //   // toast.success("Event created Successfully");
+        // }
+        if (action.payload.detail && action.payload.detail.length > 1) {
+          toast.error(action.payload.detail);
+        }
+        // state.betTypes = action.payload.results;
+      })
+      .addCase(placeBet.rejected, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        toast.error("Ooops!! Something went wrong, try again later!");
+      })
+
+      .addCase(inviteBettor.pending, (state, action) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(inviteBettor.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        console.log(action);
+      })
+      .addCase(inviteBettor.rejected, (state, action) => {
         state.loading = false;
         state.error = false;
         toast.error("Ooops!! Something went wrong, try again later!");
@@ -759,7 +981,7 @@ const userReducer = createSlice({
       .addCase(setNewPin.fulfilled, (state, action) => {
         state.loading = false;
         state.error = false;
-        toast.success("Pin Updated Successful");
+        // toast.success("Pin Updated Successful");
       })
       .addCase(setNewPin.rejected, (state, action) => {
         state.loading = false;
@@ -772,7 +994,7 @@ const userReducer = createSlice({
       })
       .addCase(deactivateAccount.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = false;  
+        state.error = false;
       })
       .addCase(deactivateAccount.rejected, (state, action) => {
         state.loading = false;
@@ -821,16 +1043,16 @@ const userReducer = createSlice({
       .addCase(getUserCreatedEvents.fulfilled, (state, action) => {
         state.loading = false;
         state.error = false;
-        if (action.payload && action.payload.length > 0) {
-          state.userEvents = action.payload;
+        if (action.payload && action.payload?.results.length > 0) {
+          state.userEvents = action.payload?.results;
         } else {
-          toast.error("Error fetching user created events");
+          // toast.error("Error fetching user created events");
         }
       })
       .addCase(getUserCreatedEvents.rejected, (state, action) => {
         state.loading = false;
         state.error = false;
-        toast.error("Error fetching balance");
+        // toast.error("Error fetching balance");
       })
 
       .addMatcher(
@@ -846,7 +1068,7 @@ const userReducer = createSlice({
 export const {
   logout,
   setOnboarding,
-  setOnboardingLoading, 
+  setOnboardingLoading,
   toggleDarkMode,
   setApplyCoursePrice,
   toggleRemeberMe,

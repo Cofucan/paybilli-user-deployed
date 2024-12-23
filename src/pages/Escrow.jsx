@@ -19,12 +19,18 @@ const Escrow = () => {
   const dispatch = useDispatch();
 
   const [openTab, setOpenTab] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
   const [data, setData] = useState({});
   const [inviteTab, setInviteTab] = useState(false);
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 970px)" });
   useEffect(() => {
-    dispatch(getUserCreatedEvents({ token, condition: "pending" }));
+    dispatch(getUserCreatedEvents());
   }, []);
+
+  const clickHandler = (item) => {
+    setData(item)
+    setOpenDetails(true)
+  }
   
   const columns = [
     {
@@ -137,7 +143,7 @@ const Escrow = () => {
 
         return (
           <BsThreeDots
-            onClick={() => setData(params.row)}
+            onClick={() => clickHandler(params.row)}
             size={24}
             color="white"
             className="bg-[#3FAAE0] cursor-pointer rounded-full p-1 flex items-center justify-center"
@@ -213,8 +219,8 @@ const Escrow = () => {
         )}
       </div>
       {openTab && <AddEvent setOpenTab={() => setOpenTab(false)} />}
-      {Object.keys(data) && Object.keys(data).length > 1 && (
-        <AddBettor data={data} setData={() => setData({})} />
+      {openDetails && (
+        <AddBettor data={data} setData={() => setData({})}  setOpenTab={() => setOpenDetails(false)} />
       )}{" "}
     </section>
   );

@@ -16,7 +16,7 @@ const MobileHeader = ({ openDrawer }) => {
         //   ? "bg-[#0a0325] border-b-white/10"
           // : 
           "bg-white border-b-black/10 text-black"
-      } hidden border-b-[1px] sticky w-full top-0 left-0 z-[50] px-5 h-[60px]  justify-between items-center max-md:flex`}
+      } hidden border-b-[1px] sticky w-full z-40 top-0 left-0 px-5 h-[60px]  justify-between items-center max-md:flex`}
     >
       <div className="flex items-center gap-x-3">
         <GiHamburgerMenu

@@ -17,7 +17,7 @@ import {
 import { CgAsterisk } from "react-icons/cg";
 
 const Onboarding = () => {
-  const { loading, userInfo } = useSelector((state) => state.user);
+  const { loading, userInfo, token } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [phase, setPhase] = useState(1);
@@ -30,7 +30,7 @@ const Onboarding = () => {
   const [bvn, setBvn] = useState("");
   const [nin, setNin] = useState("");
   const [pinDigits, setPinDigits] = useState(Array(4).fill(""));
-  const token = sessionStorage.getItem("token");
+  // const token = sessionStorage.getItem("token");
 
   const data = {
     month_of_birth: month,
@@ -60,7 +60,7 @@ const Onboarding = () => {
     } else if (radio === "nin") {
       setBvn("");
     }
-  }, [radio]);
+  }, [radio]); 
 
   console.log(userInfo);
 

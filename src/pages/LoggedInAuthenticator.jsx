@@ -21,14 +21,14 @@ export default function LoggedInAuthenticator({ children }) {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (loggedIn) {
-      dispatch(getOpenBets(token));
-      dispatch(getAllEventTypes(token));
-      dispatch(getAirtimeOptions(token));
-      dispatch(getWalletBalance({ token }));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (loggedIn) {
+  //     dispatch(getOpenBets(token));
+  //     dispatch(getAllEventTypes(token));
+  //     dispatch(getAirtimeOptions(token));
+  //     dispatch(getWalletBalance({ token }));
+  //   }
+  // }, []);
 
   if (!loggedIn) {
     return <Navigate to="/" />;
@@ -38,7 +38,7 @@ export default function LoggedInAuthenticator({ children }) {
   // }
 
   return (
-    <div className="flex max-md:flex-col overflow-hidden ">
+    <div className="flex max-md:flex-col relative overflow-hidden ">
       <ToastContainer style={{ zIndex: 999999999 }} />
       <div className=" lg:block  hidden " >
         {(!window.location.pathname.includes("onboarding")) && (

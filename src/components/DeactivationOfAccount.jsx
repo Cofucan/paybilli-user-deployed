@@ -34,7 +34,7 @@ export default function DeactivationOfAccount(props) {
     }
 
     return (
-        <div className=' w-full fixed inset-0 z-50 bg-black bg-opacity-30 lg:px-0 px-4 flex justify-center items-center ' >
+        <div className=' w-full fixed inset-0 z-[10000] bg-black bg-opacity-30 lg:px-0 px-4 flex justify-center items-center ' >
             <div className=' relative z-20 w-full rounded-xl max-w-[500px] h-fit bg-white ' >
                 <div className=' w-full flex px-4 py-4 justify-between items-center  ' >
                     <h3 className=' text-xl lg:text-[30px] font-bold text-[#232759] ' >Deactivate Account</h3>

@@ -44,7 +44,7 @@ const Supports = () => {
           <div className="flex items-center gap-x-2">
             <img width={60} src={pink} />
             <div className="flex flex-col">
-              <h4 className="font-[600]">Set Transaction Pin </h4>
+              <h4 className="font-[600]">Get Support</h4>
               <p>
                 Tellus pulvinar cras sed posuere duis.Velit euismod quis sed ut
                 quis.
@@ -59,7 +59,7 @@ const Supports = () => {
           <div className="flex items-center gap-x-2">
             <img width={60} src={blue} />
             <div className="flex flex-col">
-              <h4 className="font-[600]">Notification</h4>
+              <h4 className="font-[600]">Closed Ticket</h4>
               <p>
                 Tellus pulvinar cras sed posuere duis.Velit euismod quis sed ut
                 quis.

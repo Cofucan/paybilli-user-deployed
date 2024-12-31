@@ -8,7 +8,10 @@ import profile from "../../assets/profile.png";
 
 const MobileHeader = ({ openDrawer }) => {
   const location = useLocation();
-  const { userInfo, darkMode } = useSelector((state) => state.user);
+  const { userInfo, darkMode } = useSelector((state) => state.user); 
+
+  const baseUrl = "https://paybilli-api-16f195c5b3f3.herokuapp.com";
+
   return (
     <div
       className={`${
@@ -39,8 +42,8 @@ const MobileHeader = ({ openDrawer }) => {
                 {/* <p className="text-[#0c0c0c]">Hi, {userInfo.first_name}</p> */}
                 <img
                     onContextMenu={(e) => e.preventDefault()}
-                    width={50}
-                    src={profile}
+                    className=' rounded-full w-10 h-10 '
+                    src={userInfo?.profile_image_url ? `${baseUrl+userInfo?.profile_image_url}` : profile}
                 />
             </div>
     </div>

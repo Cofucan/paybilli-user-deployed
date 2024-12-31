@@ -181,7 +181,7 @@ export default function JoinEvent({ setData, data, setOpenTab }) {
             </div>
           )}
           {phase === 4 && (
-            <SuccessModal tab={tab} close={setOpenTab} />
+            <SuccessModal tab={tab} setTab={setTab} close={setOpenTab} />
           )}
         </div>
       </div>

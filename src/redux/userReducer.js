@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import Onboarding from "../pages/Onboarding";
-import { useSearchParams } from "react-router-dom";
+import axios from "axios"
 
 const initialState = {
   loggedIn: checkLoggedIn(),
@@ -25,6 +24,7 @@ const initialState = {
   notes: [],
   onboarding: {},
   openBets: [],
+  withdrawDetail: [],
   pendingBets: [],
   dataList: [],
   betTypes: [],
@@ -94,6 +94,36 @@ export const accountCheck = createAsyncThunk(
   }
 );
 
+export const updateAccount = createAsyncThunk(
+  "updateAccount",
+  async (data, thunkAPI) => {
+    try {
+
+      const formdata = new FormData()
+      formdata.append("first_name", data?.data?.first_name)
+      formdata.append("last_name", data?.data?.last_name)
+      formdata.append("username", data?.data?.username)
+      formdata.append("email", data?.data?.email)
+      formdata.append("phone_number", data?.data?.phone_number)
+      formdata.append("date_of_birth", data?.data?.date_of_birth)
+      formdata.append("month_of_birth", data?.data?.month_of_birth)
+      formdata.append("country", data?.data?.country)
+      formdata.append("state", data?.data?.state)
+      if (data?.imageFile) {
+        formdata.append("profile_image", data?.imageFile)
+      } 
+      
+      let response = axios.put(`${baseUrl}/account/user-details/`, formdata, {
+        headers: { 'Content-Type': data?.imageFile ? data?.imageFile?.type : "" ,
+        Authorization: `Bearer ${sessionStoragetoken}`}
+      })
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(true);
+    }
+  }
+);
+
 export const forgotPassword = createAsyncThunk(
   "forgotPassword",
   async (data, thunkAPI) => {
@@ -151,6 +181,44 @@ export const setPassword = createAsyncThunk(
   }
 );
 
+export const changePassword = createAsyncThunk(
+  "changePassword",
+  async (data, thunkAPI) => {
+    try {
+      let response = await fetch(`${baseUrl}/account/change-password/`, {
+        method: "POST",
+        body: JSON.stringify(data.data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStoragetoken}`,
+        },
+      }).then((res) => res.json());
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(true);
+    }
+  }
+);
+
+export const setBankDetails = createAsyncThunk(
+  "setBankDetails",
+  async (data, thunkAPI) => {
+    try {
+      let response = await fetch(`${baseUrl}/account/withdrawal-details/`, {
+        method: "POST",
+        body: JSON.stringify(data.data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStoragetoken}`,
+        },
+      }).then((res) => res.json());
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(true);
+    }
+  }
+);
+
 export const sendVerificationCode = createAsyncThunk(
   "sendVerificationCode",
   async (token, thunkAPI) => {
@@ -195,7 +263,7 @@ export const kycVerification = createAsyncThunk(
         body: JSON.stringify(data.kyc),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStoragetoken}`,
+          Authorization: `Bearer ${data?.token ? data?.token : sessionStoragetoken}`,
         },
       }).then((res) => res.json());
       return response;
@@ -226,6 +294,23 @@ export const getOpenBets = createAsyncThunk(
   async (token, thunkAPI) => {
     try {
       let response = await fetch(`${baseUrl}/events/user/?status=open`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${sessionStoragetoken}`,
+        },
+      }).then((res) => res?.json());
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(true);
+    }
+  }
+);
+
+export const getWithdrawDetail = createAsyncThunk(
+  "getWithdrawDetail",
+  async (token, thunkAPI) => {
+    try {
+      let response = await fetch(`${baseUrl}/account/withdrawal-details/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${sessionStoragetoken}`,
@@ -704,6 +789,39 @@ const userReducer = createSlice({
         state.error = true;
         state.responseMessage = action.payload?.message;
       })
+
+      .addCase(updateAccount.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(updateAccount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+
+        state.userInfo = action?.payload?.data?.user; 
+      })
+      .addCase(updateAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.responseMessage = action.payload?.message;
+      })
+
+      .addCase(setBankDetails.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(setBankDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+
+        console.log(action);
+      })
+      .addCase(setBankDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.responseMessage = action.payload?.message;
+      })
+      
       .addCase(airtimePayment.pending, (state) => {
         state.loading = true;
         state.error = false;
@@ -717,7 +835,7 @@ const userReducer = createSlice({
         state.loading = false;
         state.error = true;
         state.responseMessage = action.payload?.message;
-      }) 
+      })
       .addCase(dataPayment.pending, (state) => {
         state.loading = true;
         state.error = false;
@@ -768,6 +886,21 @@ const userReducer = createSlice({
         state.error = true;
         state.responseMessage = action.payload?.message;
       })
+      
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false; 
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.responseMessage = action.payload?.message;
+      })
+      
       .addCase(kycVerification.pending, (state, action) => {
         state.loading = true;
         state.error = false;
@@ -827,7 +960,24 @@ const userReducer = createSlice({
       .addCase(getOpenBets.rejected, (state, action) => {
         state.loading = false;
         state.error = false;
-        toast.error("Ooops!! Something went wrong, try again later!");
+        // toast.error("Ooops!! Something went wrong, try again later!");
+      })
+
+      .addCase(getWithdrawDetail.pending, (state, action) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getWithdrawDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+
+        // state.withdrawDetail = action.payload.results
+        console.log(action.payload);
+      })
+      .addCase(getWithdrawDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        // toast.error("Ooops!! Something went wrong, try again later!");
       })
       .addCase(getPendingBets.pending, (state, action) => {
         state.loading = true;
@@ -860,7 +1010,7 @@ const userReducer = createSlice({
         state.error = false;
         // toast.error("Ooops!! Something went wrong, try again later!");
       })
-      
+
       .addCase(getTvList.pending, (state, action) => {
         // state.loading = true;
         state.error = false;
@@ -917,7 +1067,7 @@ const userReducer = createSlice({
         state.error = false;
         toast.error("Ooops!! Something went wrong, try again later!");
       })
-      
+
 
       .addCase(placeBet.pending, (state, action) => {
         state.loading = true;

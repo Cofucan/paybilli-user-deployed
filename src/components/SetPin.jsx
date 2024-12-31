@@ -94,7 +94,7 @@ export default function SetPin(props) {
                     </div>
                 )} */}
                 {tab === 2 && (
-                    <SuccessModal  tab={tabTwo} close={props?.setOpenPin} />
+                    <SuccessModal  tab={tabTwo} setTab={setTabTwo}  close={props?.setOpenPin} />
                 )}
             </div>
         </div>

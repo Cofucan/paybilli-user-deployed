@@ -1,28 +1,18 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
-import { useRef } from "react";
-import { BeatLoader } from "react-spinners";
-import ProgressBar from "@ramonak/react-progress-bar";
-import Lottie from "lottie-react";
-import Wallet from "../assets/wallet.png";
-import profile from "../assets/profile.png";
+import { useState } from "react"; 
+import Wallet from "../assets/wallet.png"; 
 import Shake from "../assets/shake.png";
 import money from "../assets/money.png";
 import { MdAdd } from "react-icons/md";
 import wave from "../assets/wave.png";
-import { HiOutlineMinus } from "react-icons/hi";
-import { BsBell } from "react-icons/bs";
+import { HiOutlineMinus } from "react-icons/hi"; 
 import { HiOutlineArrowNarrowRight } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getAllEventTypes,
-  getOpenBets,
+import { 
   getWalletBalance,
 } from "../redux/userReducer";
-import FundWallet from "../components/FundWallet";
-import { PaystackButton } from "react-paystack";
-import { useNavigate } from "react-router-dom";
-import PlaceBettor from "../components/PlaceBet";
+import FundWallet from "../components/FundWallet"; 
+import { useNavigate } from "react-router-dom"; 
 import Navbar from "../components/Navbar";
 import { formatNumber } from "../helper/numberFormat";
 import OpenBetTable from "../components/openBetTable";

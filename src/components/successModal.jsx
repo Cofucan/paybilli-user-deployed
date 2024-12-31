@@ -7,6 +7,7 @@ export default function SuccessModal(props) {
         if(props?.tab) { 
             setTimeout(() => {
                 props.close(false); 
+                props?.setTab(false)
               }, 2000);
         }
     }, [props?.tab])

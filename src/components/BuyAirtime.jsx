@@ -283,7 +283,7 @@ const BuyAirtime = ({ setOpenAirtime }) => {
           )}
         </div>
         {phase === 4 && (
-          <SuccessModal tab={tab} close={setOpenAirtime} />
+          <SuccessModal tab={tab} setTab={setTab} close={setOpenAirtime} />
         )}
       </div>
     </div>

@@ -188,7 +188,7 @@ export default function BettorModal(props) {
                 </div>
             )}
             {props?.tab === 1 && (
-                <SuccessModal tab={tab} close={props?.close} />
+                <SuccessModal tab={tab} setTab={setTab} close={props?.close} />
             )}
         </div>
     )

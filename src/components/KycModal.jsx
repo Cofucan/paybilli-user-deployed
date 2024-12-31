@@ -164,7 +164,7 @@ export default function KycModal(props) {
                     </div>
                 )}
                 {tab && (
-                    <SuccessModal tab={tabTwo} close={props?.setOpen} />
+                    <SuccessModal tab={tabTwo} setTab={setTabTwo} close={props?.setOpen} />
                 )}
             </div>
         </div>

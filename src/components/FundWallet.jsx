@@ -108,7 +108,7 @@ const FundWallet = ({ setOpenTab }) => {
   };
   console.log(reference);
   return (
-    <div className="w-full absolute top-0 left-0 h-full bg-black/[.70] flex justify-end">
+    <div className="w-full fixed z-[10000] top-0 left-0 h-full bg-black/[.70] flex justify-end">
       <div
         className={`overflow-y-auto ${
           showTab ? "w-[60%] md:w-[30%] bg-white overflow-y-auto" : "w-[0px]"

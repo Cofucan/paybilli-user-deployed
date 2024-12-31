@@ -80,7 +80,7 @@ const SideBar = ({ isOpen, closeDrawer }) => {
     <motion.section
       onClick={() => closeDrawer()}
       className={`${darkMode ? "" : "bg-white"
-        } overflow-visible max-md:w-full h-full max-md:fixed max-md:z-[999]`}
+        } overflow-visible max-md:w-full h-full max-md:fixed lg:z-40 z-[10000] `}
     >
       <motion.section
         onClick={(e) => e.stopPropagation()}

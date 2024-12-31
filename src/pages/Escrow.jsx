@@ -19,12 +19,18 @@ const Escrow = () => {
   const dispatch = useDispatch();
 
   const [openTab, setOpenTab] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
   const [data, setData] = useState({});
   const [inviteTab, setInviteTab] = useState(false);
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 970px)" });
   useEffect(() => {
-    dispatch(getUserCreatedEvents({ token, condition: "pending" }));
+    dispatch(getUserCreatedEvents());
   }, []);
+
+  const clickHandler = (item) => {
+    setData(item)
+    setOpenDetails(true)
+  }
   
   const columns = [
     {
@@ -137,7 +143,7 @@ const Escrow = () => {
 
         return (
           <BsThreeDots
-            onClick={() => setData(params.row)}
+            onClick={() => clickHandler(params.row)}
             size={24}
             color="white"
             className="bg-[#3FAAE0] cursor-pointer rounded-full p-1 flex items-center justify-center"
@@ -148,7 +154,7 @@ const Escrow = () => {
   ];
 
   return (
-    <section className="h-[100vh] lg:px-10 p-4 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] lg:px-10 lg:pt-0 pt-4 px-4 pb-4 w-[100%] overflow-y-auto">
       <Navbar />
       <div className="flex mt-6 justify-between items-center w-full">
         <h4 className="font-[700] mt-2">Created Bet</h4>
@@ -213,8 +219,8 @@ const Escrow = () => {
         )}
       </div>
       {openTab && <AddEvent setOpenTab={() => setOpenTab(false)} />}
-      {Object.keys(data) && Object.keys(data).length > 1 && (
-        <AddBettor data={data} setData={() => setData({})} />
+      {openDetails && (
+        <AddBettor data={data} setData={() => setData({})}  setOpenTab={() => setOpenDetails(false)} />
       )}{" "}
     </section>
   );

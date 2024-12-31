@@ -6,10 +6,12 @@ import profile from "../assets/profile.png";
 
 export default function Navbar() {
 
-    const { userInfo } = useSelector((state) => state.user);
+    const { userInfo } = useSelector((state) => state.user); 
+
+    const baseUrl = "https://paybilli-api-16f195c5b3f3.herokuapp.com";
 
     return (
-        <div className="hidden sticky top-0 lg:flex bg-[#F5F5F5] py-2 w-full items-center justify-between">
+        <div className="hidden sticky z-[10000] top-0 lg:flex bg-[#F5F5F5] py-2 w-full items-center justify-between">
             <div className="flex flex-col">
                 <h4 className="flex font-[700] text-[#0c0c0c]  items-center">
                     Hi, {userInfo.first_name}{" "}
@@ -23,9 +25,9 @@ export default function Navbar() {
                 </div>
                 <p className="text-[#0c0c0c]">Hi, {userInfo.first_name}</p>
                 <img
-                    onContextMenu={(e) => e.preventDefault()}
-                    width={50}
-                    src={profile}
+                    onContextMenu={(e) => e.preventDefault()} 
+                    className=' rounded-full w-10 h-10 '
+                    src={userInfo?.profile_image_url ? `${baseUrl+userInfo?.profile_image_url}` : profile}
                 />
             </div>
         </div>

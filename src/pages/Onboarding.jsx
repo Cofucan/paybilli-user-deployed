@@ -17,20 +17,22 @@ import {
 import { CgAsterisk } from "react-icons/cg";
 
 const Onboarding = () => {
-  const { loading, userInfo } = useSelector((state) => state.user);
+  const { loading, userInfo, token } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [phase, setPhase] = useState(1);
-  const [month, setMonth] = useState("");
   const [radio, setRadio] = useState("");
   const [file, setFile] = useState(null);
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
+  const [month, setMonth] = useState("");
   const [date_of_birth, setDate_of_birth] = useState("");
   const [bvn, setBvn] = useState("");
   const [nin, setNin] = useState("");
   const [pinDigits, setPinDigits] = useState(Array(4).fill(""));
-  const token = sessionStorage.getItem("token");
+  // const token = sessionStorage.getItem("token");
+
+  console.log(token);
 
   const data = {
     month_of_birth: month,
@@ -60,7 +62,7 @@ const Onboarding = () => {
     } else if (radio === "nin") {
       setBvn("");
     }
-  }, [radio]);
+  }, [radio]); 
 
   console.log(userInfo);
 
@@ -90,6 +92,7 @@ const Onboarding = () => {
       pinInputRefs.current[index - 1].focus();
     }
   };
+  
   const handleSubmit = async () => {
     if (phase === 1 && country.length > 2 && state.length > 1) {
       dispatch(setOnboardingLoading(true));

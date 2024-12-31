@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import profile from "../assets/profile.png";
 import settings from "../assets/settings.png";
 import green from "../assets/shield.png";
@@ -12,10 +12,18 @@ import { BsBell } from "react-icons/bs";
 import Wallet from "../assets/wallet.png";
 import { HiOutlineMinus } from "react-icons/hi";
 import Navbar from "../components/Navbar";
+import SetPin from "../components/SetPin";
+import DeactivationOfAccount from "../components/DeactivationOfAccount";
+import KycModal from "../components/KycModal";
 
 const Settings = () => {
+
+  const [openPin, setOpenPin] = useState(false)
+  const [openAccount, setOpenAccount] = useState(false)
+  const [openKyc, setOpenKyc] = useState(false)
+
   return (
-    <section className="h-[100vh] p-4 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] px-4 pb-4 lg:pt-0 pt-4 w-[100%] overflow-y-auto">
       <Navbar />
       <div className="flex flex-col space-y-4 w-full lg:w-[75%] mx-auto">
         <h4 className=" font-[700] text-[#0c0c0c]  items-center">Settings</h4>
@@ -36,7 +44,7 @@ const Settings = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center bg-white rounded-[7px] p-4 justify-between">
+        <div role="button" onClick={()=> setOpenPin(true)} className="flex items-center bg-white rounded-[7px] p-4 justify-between">
           <div className="flex items-center gap-x-2">
             <img width={60} src={pink} />
             <div className="flex flex-col">
@@ -66,7 +74,7 @@ const Settings = () => {
           </div>
           <FaChevronRight size={24} />
         </div>
-        <div className="flex items-center bg-white rounded-[7px] p-4 justify-between">
+        <div onClick={()=> setOpenKyc((prev)=> !prev)} className="flex items-center bg-white rounded-[7px] p-4 justify-between">
           <div className="flex items-center gap-x-2">
             <img width={60} src={green} />
             <div className="flex flex-col">
@@ -81,7 +89,7 @@ const Settings = () => {
           </div>
           <FaChevronRight size={24} />
         </div>
-        <div className="flex items-center bg-white rounded-[7px] p-4 justify-between">
+        <div role="button" onClick={()=> setOpenAccount(true)} className="flex items-center bg-white rounded-[7px] p-4 justify-between">
           <div className="flex items-center gap-x-2">
             <img width={60} src={red} />
             <div className="flex flex-col">
@@ -97,6 +105,15 @@ const Settings = () => {
           <FaChevronRight size={24} />
         </div>
       </div>
+      {openPin && (
+        <SetPin setOpenPin={setOpenPin} />
+      )}
+      {openAccount && (
+        <DeactivationOfAccount setOpen={setOpenAccount} />
+      )}
+      {openKyc && (
+        <KycModal setOpen={setOpenKyc} />
+      )}
     </section>
   );
 };

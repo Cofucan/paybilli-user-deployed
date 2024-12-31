@@ -1,43 +1,32 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
-import { useRef } from "react";
-import { BeatLoader } from "react-spinners";
-import ProgressBar from "@ramonak/react-progress-bar";
-import Lottie from "lottie-react";
-import Wallet from "../assets/wallet.png";
-import profile from "../assets/profile.png";
+import { useState } from "react"; 
+import Wallet from "../assets/wallet.png"; 
 import Shake from "../assets/shake.png";
 import money from "../assets/money.png";
 import { MdAdd } from "react-icons/md";
 import wave from "../assets/wave.png";
-import { HiOutlineMinus } from "react-icons/hi";
-import { BsBell } from "react-icons/bs";
+import { HiOutlineMinus } from "react-icons/hi"; 
 import { HiOutlineArrowNarrowRight } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getAllEventTypes,
-  getOpenBets,
+import { 
   getWalletBalance,
 } from "../redux/userReducer";
-import FundWallet from "../components/FundWallet";
-import { PaystackButton } from "react-paystack";
-import { useNavigate } from "react-router-dom";
-import PlaceBettor from "../components/PlaceBet";
+import FundWallet from "../components/FundWallet"; 
+import { useNavigate } from "react-router-dom"; 
 import Navbar from "../components/Navbar";
+import { formatNumber } from "../helper/numberFormat";
+import OpenBetTable from "../components/openBetTable";
 
 const Dashboard = () => {
-  const { loading, userInfo, openBets, balance, balanceLoading } = useSelector(
+  const { userInfo, balance, balanceLoading } = useSelector(
     (state) => state.user
   );
   const token = sessionStorage.getItem("token");
 
-  const dispatch = useDispatch();
-  console.log(balance[1]);
+  const dispatch = useDispatch(); 
   const [openTab, setOpenTab] = useState(false);
 
-  useEffect(() => {
-    dispatch(getOpenBets(token));
-    dispatch(getAllEventTypes(token));
+  useEffect(() => { 
     dispatch(getWalletBalance({ token }));
   }, []);
 
@@ -51,30 +40,21 @@ const Dashboard = () => {
     const intervalId = setInterval(fetchData, 30000); // Fetch every 30 seconds
 
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
-
-  const config = {
-    reference: "V1YDVD71XH9I54KX",
-    email: userInfo.email,
-    amount: 200000, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
-    publicKey: "pk_test_add85a75a264bae27365e637689aabca539c2694",
-  };
-
+  }, []); 
 
   const navigate = useNavigate()
-
-  // const text = React.createElement(
-  //   "div",
-  //   null,
-  //   React.createElement("h4", null, "Card Payment"),
-  //   React.createElement("p", null, "Secure Payment with Paystack")
-  // );
-
-  // console.log(userInfo);
+  
   return (
-    <section className="h-[100vh] p-4 lg:px-10 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] px-4 pb-4 lg:pt-0 pt-4 lg:px-10 w-[100%] overflow-y-auto">
       <Navbar />
-      <h4 className="font-[700] mt-2">Dashboard</h4>
+      <h4 className="font-[700] lg:block hidden mt-2">Dashboard</h4>
+      <div className="flex flex-col">
+        <h4 className="flex lg:hidden font-[700] text-[#0c0c0c] text-xl  items-center">
+          Hi, {userInfo.first_name}{" "}
+          <img onContextMenu={(e) => e.preventDefault()} src={wave} />
+        </h4>
+        <p>#{userInfo.username}</p>
+      </div>
       <div className="lg:grid grid-cols-3 flex flex-col gap-4 lg:gap-10 mt-4 w-full">
         <div className="flex flex-col bg-white p-4 max-h-[155px] rounded-[7px]">
           <div className="flex items-center gap-x-6">
@@ -85,7 +65,7 @@ const Dashboard = () => {
             />
             <div className="flex flex-col">
               <h4 className="text-[#0c0c0c] truncate font-[700] xxl:text-[25px]">
-                NGN{balance.length > 0 ? balance[1].balance : "0.00"}
+                {balance.length > 0 ? formatNumber(balance[1].balance) : "0.00"}
               </h4>
               <p>{balanceLoading ? "Refreshing balance..." : "My balance"}</p>
             </div>
@@ -109,7 +89,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div role="button" onClick={() => navigate("/user/events/openbet")} className="flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
+        <div role="button" onClick={() => navigate("/user/events/openbet")} className=" hidden md:flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
           <div className="flex items-center gap-x-6">
             <img
               onContextMenu={(e) => e.preventDefault()}
@@ -125,7 +105,7 @@ const Dashboard = () => {
             <HiOutlineArrowNarrowRight size={32} />{" "}
           </div>
         </div>
-        <div role="button" onClick={() => navigate("/user/events/pendingbet")} className="flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
+        <div role="button" onClick={() => navigate("/user/events/pendingbet")} className=" hidden md:flex flex-col bg-white rounded-[7px] p-5 max-h-[155px]">
           <div className="flex items-center gap-x-6 ">
             <img
               onContextMenu={(e) => e.preventDefault()}
@@ -141,19 +121,45 @@ const Dashboard = () => {
             <HiOutlineArrowNarrowRight size={32} />{" "}
           </div>
         </div>
+        <div className=" w-full md:hidden flex gap-4 " >
+          <div role="button" onClick={() => navigate("/user/events/openbet")} className="flex flex-col w-full bg-white rounded-[7px] p-3 justify-center items-center max-h-[155px]">
+            <div className="flex items-center gap-x-6">
+              <img
+                onContextMenu={(e) => e.preventDefault()}
+                src={Shake}
+                width={50}
+              />
+              <div className="flex flex-col">
+                <h4 className="text-[#0c0c0c] font-[700] xxl:text-[25px]">031</h4>
+                <p>Open Bets</p>
+              </div>
+            </div>
+            {/* <div className="flex justify-end w-full  mt-auto">
+              <HiOutlineArrowNarrowRight size={32} />{" "}
+            </div> */}
+          </div>
+          <div role="button" onClick={() => navigate("/user/events/pendingbet")} className="flex flex-col w-full bg-white rounded-[7px] p-3 justify-center items-center max-h-[155px]">
+            <div className="flex items-center gap-x-6 ">
+              <img
+                onContextMenu={(e) => e.preventDefault()}
+                src={Shake}
+                width={50}
+              />
+              <div className="flex flex-col">
+                <h4 className="text-[#0c0c0c] font-[700] xxl:text-[25px]">067</h4>
+                <p>Pending Bets</p>
+              </div>
+            </div>
+            <div className=" justify-end lg:flex hidden w-full  mt-auto">
+              <HiOutlineArrowNarrowRight size={32} />{" "}
+            </div>
+          </div>
+        </div>
       </div>
       <div className="flex mt-4 lg:flex-row flex-col-reverse w-full gap-4 lg:gap-10">
         <div className="flex bg-white flex-1  rounded-[7px] p-5 flex-col ">
-          <h4 className="text-[#212059] font-[700]">Recent Open Bets</h4>
-          {openBets.length < 1 && (
-            <>
-              <div className=" w-full  mt-40">
-                <p className="text-center font-[600]  text-[15px]">
-                  Nothing to show. Open events will show here..
-                </p>
-              </div>
-            </>
-          )}
+          <h4 className="text-[#212059] font-[700]">Recent Open Bets</h4> 
+          <OpenBetTable />
         </div>
         <div className="flex w-full lg:w-[440px]  flex-col">
           <div className="flex bg-white p-5 rounded-[7px] w-full flex-col">
@@ -191,7 +197,7 @@ const Dashboard = () => {
                 <p>Create Bets</p>
               </div>
             </div>
-            <div className="flex justify-end w-full  mt-auto">
+            <div className=" lg:flex hidden justify-end w-full  mt-auto">
               <HiOutlineArrowNarrowRight size={32} />{" "}
             </div>
           </div>

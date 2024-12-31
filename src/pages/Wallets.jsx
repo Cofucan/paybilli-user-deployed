@@ -15,31 +15,39 @@ import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import BuyData from "../components/BuyData";
 import PayBill from "../components/PayBill";
+import { formatNumber } from "../helper/numberFormat";
+import FundWallet from "../components/FundWallet";
 
 const Wallets = () => {
-  const { loading, userInfo, openBets } = useSelector((state) => state.user);
-
+  const { loading, userInfo, openBets, balance, balanceLoading } = useSelector(
+    (state) => state.user
+  );
   const [openAirtime, setOpenAirtime] = useState(false);
   const [openData, setOpenData] = useState(false);
   const [openBillPay, setOpenBillPay] = useState(false);
+  const [openTab, setOpenTab] = useState(false);
 
   return (
-    <section className="h-[100vh] p-4 w-[100%] overflow-y-auto">
+    <section className="h-[100vh] px-4 lg:pt-0 pt-4 pb-4 w-[100%] overflow-y-auto">
       <Navbar />
       <div className="flex flex-col pb-6 space-y-4 lg:w-[75%] mx-auto">
         <h4 className=" font-[700] text-[#0c0c0c]  items-center">Wallet</h4>
         <div className="flex flex-col box bg-white p-4 max-h-[155px] rounded-[7px]">
           <div className="flex items-center gap-x-6">
-            <img src={Wallet} width={50} />
+            <img
+              onContextMenu={(e) => e.preventDefault()}
+              src={Wallet}
+              width={50}
+            />
             <div className="flex flex-col">
-              <h4 className="text-[#0c0c0c] font-[700] text-xl lg:text-[30px]">
-                NGN200,000.00
+              <h4 className="text-[#0c0c0c] truncate font-[700] xxl:text-[25px]">
+                {balance.length > 0 ? formatNumber(balance[1].balance) : "0.00"}
               </h4>
-              <p>My balance</p>
+              <p>{balanceLoading ? "Refreshing balance..." : "My balance"}</p>
             </div>
           </div>
           <div className="flex mt-4 w-full ">
-            <div className="flex bg-[#e6e6e6] p-2 px-3">
+            <div role="button" onClick={()=> setOpenTab(true)} className="flex bg-[#e6e6e6] p-2 px-3">
               <p className="flex items-center gap-x-1 text-[13px] text-[#5a5a5a] rounded-[7px]">
                 <MdAdd />
                 Fund Wallet
@@ -71,10 +79,10 @@ const Wallets = () => {
           </div>
           <FaChevronRight size={24} />
         </div>
-        <div 
+        <div
           onClick={() => setOpenData(true)}
           className="flex box items-center cursor-pointer bg-white rounded-[7px] p-4 justify-between"
-          >
+        >
           <div className="flex items-center gap-x-2">
             <img width={60} src={blue} />
             <div className="flex flex-col">
@@ -131,6 +139,7 @@ const Wallets = () => {
       {openBillPay && (
         <PayBill setOpenAirtime={() => setOpenBillPay(false)} />
       )}
+      {openTab && <FundWallet setOpenTab={() => setOpenTab(false)} />}
     </section>
   );
 };
